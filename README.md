@@ -19,7 +19,7 @@ Then open http://localhost:8000.
 
 ## Order form (ui-polish)
 
-The order form posts to a Google Apps Script web app that adds a row to a Google Sheet and emails the shop. Setup steps are in `form-to-sheet/guide.md`. Paste your own web app URL into `ORDER_URL` in `index.html`. Until then the form shows a "not connected yet" message.
+The order form posts to a Google Apps Script web app that adds a row to a Google Sheet and emails the shop. Setup steps are in `form-to-sheet/guide.md`. Then open `index.html`, find the line marked `PASTE YOUR GOOGLE WEB APP URL`, and put your web app URL (ending in `/exec`) between the quotes in `ORDER_URL`. Until then the form shows a "not connected yet" message.
 
 ## Placeholders to fill in
 

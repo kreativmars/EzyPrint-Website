@@ -44,7 +44,8 @@
   --pink-text: #FF5FA2; --cyan-text: #4FDDF2; --footer: #070E22; --footer-fg: #B4C0D8; color-scheme: dark;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: 110px; }
+.order { scroll-margin-top: 110px; }
 body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 17px; line-height: 1.6; overflow-x: hidden; }
 img { max-width: 100%; }
 a { color: inherit; }
@@ -248,7 +249,7 @@ footer.site { background: var(--footer); color: var(--footer-fg); padding-block:
     <button class="icon-btn" type="button" aria-label="Cart" id="cartBtn">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/><circle cx="10" cy="20" r="1.2"/><circle cx="17" cy="20" r="1.2"/></svg>
     </button>
-    <a class="btn btn-main btn-sm magnetic" href="#order">Start your order</a>
+    <a class="btn btn-main btn-sm magnetic" href="#orderForm">Start your order</a>
   </div>
 </div></header>
 
@@ -264,7 +265,7 @@ footer.site { background: var(--footer); color: var(--footer-fg); padding-block:
       </h1>
       <p class="hero-lede">Shirts, caps, mugs, stickers and souvenirs, made properly. Send a sketch, a photo or a finished design. One piece or a hundred, it gets the same care.</p>
       <div class="hero-actions">
-        <a class="btn btn-main magnetic" href="#order">Start your order <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn btn-main magnetic" href="#orderForm">Start your order <span class="arrow" aria-hidden="true">→</span></a>
         <a class="btn btn-ghost magnetic" href="#shop">Shop products</a>
       </div>
       <ul class="hero-proof">
@@ -342,14 +343,14 @@ footer.site { background: var(--footer); color: var(--footer-fg); padding-block:
     <p class="eyebrow">Weddings, birthdays and events</p>
     <h2>Souvenirs your guests will actually keep</h2>
     <p>Mugs, keychains, magnets, pins and stickers with your names, date or event logo. Tell us your theme and we'll put together a pack that fits your budget.</p>
-    <a class="btn btn-main magnetic" href="#order">Plan my souvenirs <span class="arrow" aria-hidden="true">→</span></a>
+    <a class="btn btn-main magnetic" href="#orderForm">Plan my souvenirs <span class="arrow" aria-hidden="true">→</span></a>
   </div>
 </div></section>
 
 <section class="wrap" style="padding-bottom: 88px;">
   <div class="biz" data-reveal>
     <div style="flex: 1 1 420px; min-width: 0;"><h2>Starting a small business?</h2><p>Staff shirts, branded mugs, logo stickers for your packaging. Start small, reorder anytime.</p></div>
-    <a class="btn btn-ghost magnetic" href="#order">Get a starter kit</a>
+    <a class="btn btn-ghost magnetic" href="#orderForm">Get a starter kit</a>
   </div>
 </section>
 
@@ -423,7 +424,8 @@ footer.site { background: var(--footer); color: var(--footer-fg); padding-block:
 <script>
 (function () {
   // Order form: posts to the Google Sheet web app (works on the live site; preview frames block outside requests).
-  var ORDER_URL = 'PASTE_YOUR_WEB_APP_URL_HERE'; // see form-to-sheet/guide.md
+  /* >>> PASTE YOUR GOOGLE WEB APP URL BETWEEN THE QUOTES BELOW (the one ending in /exec). See form-to-sheet/guide.md <<< */
+  var ORDER_URL = 'PASTE_YOUR_WEB_APP_URL_HERE';
   var form = document.getElementById('orderForm'), msg = document.getElementById('orderMsg'), btn = document.getElementById('orderBtn');
   form.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -437,6 +439,9 @@ footer.site { background: var(--footer); color: var(--footer-fg); padding-block:
       .then(function () { form.reset(); msg.textContent = 'Got it! We will message you with a preview and a price.'; msg.classList.add('ok'); })
       .catch(function () { msg.textContent = 'That did not go through. Please message us on Messenger or WhatsApp instead.'; msg.classList.add('err'); })
       .then(function () { btn.disabled = false; });
+  });
+  document.querySelectorAll('a[href="#orderForm"]').forEach(function (a) {
+    a.addEventListener('click', function () { setTimeout(function () { var f = document.getElementById('f-name'); if (f) f.focus({ preventScroll: true }); }, 700); });
   });
   var menuBtn = document.getElementById('menuBtn'), nav = document.getElementById('mainNav');
   menuBtn.addEventListener('click', function () { var o = nav.classList.toggle('open'); menuBtn.setAttribute('aria-expanded', o ? 'true' : 'false'); });
