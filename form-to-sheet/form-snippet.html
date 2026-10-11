@@ -1,0 +1,24 @@
+<!-- EzyPrint order form. Replace PASTE_YOUR_WEB_APP_URL_HERE with the URL from Apps Script (Deploy > Web app). -->
+<form id="orderForm" style="display:grid;gap:14px;max-width:560px">
+  <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+  <label>Your name <input name="name" required autocomplete="name"></label>
+  <label>Messenger, WhatsApp or email <input name="contact" required></label>
+  <label>What do you want printed?
+    <select name="product"><option>Shirts</option><option>Caps</option><option>Mugs</option><option>Stickers</option><option>Keychains</option><option>Magnets</option><option>Pins</option><option>Wedding / event souvenirs</option><option>Not sure yet</option></select></label>
+  <label>How many? <input name="quantity" type="number" min="1" value="1"></label>
+  <label>Needed by (optional) <input name="deadline" type="date"></label>
+  <label>Pick-up or delivery? <select name="delivery"><option>Pick-up (Quezon City)</option><option>Delivery</option></select></label>
+  <label>Tell us your idea <textarea name="idea" rows="4"></textarea></label>
+  <button type="submit">Send my idea</button>
+  <p id="orderMsg" role="status"></p>
+</form>
+<script>
+document.getElementById('orderForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var f = e.target, msg = document.getElementById('orderMsg');
+  msg.textContent = 'Sending...';
+  fetch('PASTE_YOUR_WEB_APP_URL_HERE', { method: 'POST', mode: 'no-cors', body: new URLSearchParams(new FormData(f)) })
+    .then(function () { f.reset(); msg.textContent = 'Got it! We will message you with a preview and a price.'; })
+    .catch(function () { msg.textContent = 'Something went wrong. Please message us on Messenger or WhatsApp instead.'; });
+});
+</script>

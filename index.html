@@ -2,306 +2,514 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>EzyPrint</title>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&amp;family=Poppins:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&family=Poppins:wght@500;600;700;800&display=swap">
 <style>
-body{margin:0;background:#FAF8F4}
-a{color:#1F3A68}a:hover{color:#3F7CB5}
-.btn-main:hover{background:#2A4C85}
-.btn-ghost:hover{background:#E5EEF7}
-.tile:hover{transform:translateY(-2px)}
+/* Layout: one 1200px column; a playful splash hero borrowed from the logo, then calm navy-and-paper sections with pink / yellow / cyan used only as small ink accents. */
+:root {
+  --bg: #FBF9F5;
+  --surface: #FFFFFF;
+  --surface-2: #EAF3FA;
+  --fg: #1B2233;
+  --muted: #4A5468;
+  --brand: #0E1B3D;
+  --line: #E3E8F0;
+  --btn-bg: #0E1B3D;
+  --btn-fg: #FFFFFF;
+  --btn-hover: #1C2E5E;
+  --pink: #EC1E79;
+  --pink-text: #C8125F;
+  --yellow: #FFB703;
+  --cyan: #12C3E0;
+  --cyan-text: #0A7F95;
+  --footer: #0B1636;
+  --footer-fg: #C9D3E8;
+  --display: "Poppins", "Avenir Next", "Segoe UI", sans-serif;
+  --body: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+  --radius: 22px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0B1530; --surface: #13214A; --surface-2: #172A5A; --fg: #EEF2FA; --muted: #B4C0D8;
+    --brand: #FFFFFF; --line: #24376B; --btn-bg: #FFB703; --btn-fg: #0B1636; --btn-hover: #FFC93D;
+    --pink-text: #FF5FA2; --cyan-text: #4FDDF2; --footer: #070E22; --footer-fg: #B4C0D8; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0B1530; --surface: #13214A; --surface-2: #172A5A; --fg: #EEF2FA; --muted: #B4C0D8;
+  --brand: #FFFFFF; --line: #24376B; --btn-bg: #FFB703; --btn-fg: #0B1636; --btn-hover: #FFC93D;
+  --pink-text: #FF5FA2; --cyan-text: #4FDDF2; --footer: #070E22; --footer-fg: #B4C0D8; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 17px; line-height: 1.6; overflow-x: hidden; }
+img { max-width: 100%; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; border-radius: 8px; }
+h1, h2, h3 { font-family: var(--display); color: var(--brand); text-wrap: balance; margin: 0; }
+.wrap { max-width: 1200px; margin: 0 auto; padding-inline: 24px; }
+.eyebrow { font-family: var(--display); font-weight: 600; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--cyan-text); margin: 0; }
+
+/* Top bar */
+.topbar { background: var(--footer); color: #FFFFFF; font-size: 14px; }
+.topbar .wrap { display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: center; align-items: center; padding-block: 9px; }
+.topbar a { color: #FFFFFF; font-weight: 700; text-decoration-color: var(--yellow); text-underline-offset: 3px; }
+.topbar .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pink); display: inline-block; }
+
+/* Header */
+header.site { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid transparent; transition: border-color .3s, box-shadow .3s; }
+header.site.scrolled { border-bottom-color: var(--line); box-shadow: 0 6px 24px rgba(14,27,61,.06); }
+header.site .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding-block: 12px; }
+.brand img { height: 64px; width: auto; display: block; }
+nav.main { display: flex; flex-wrap: wrap; gap: 4px 22px; font-family: var(--display); font-weight: 500; font-size: 15px; }
+nav.main a { text-decoration: none; color: var(--brand); position: relative; padding-block: 6px; }
+nav.main a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--pink), var(--yellow), var(--cyan)); transform: scaleX(0); transform-origin: left; transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+nav.main a:hover::after { transform: scaleX(1); }
+.head-actions { display: flex; align-items: center; gap: 10px; }
+.icon-btn { width: 44px; height: 44px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: var(--brand); background: transparent; border: 0; cursor: pointer; transition: background .2s; }
+.icon-btn:hover { background: var(--surface-2); }
+.menu-btn { display: none; }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 600; font-size: 16px; text-decoration: none; border-radius: 999px; padding: 15px 26px; border: 2px solid var(--btn-bg); position: relative; overflow: hidden; isolation: isolate; will-change: transform; }
+.btn-main { background: var(--btn-bg); color: var(--btn-fg); }
+.btn-main::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, var(--pink), var(--yellow) 55%, var(--cyan)); transform: translateY(101%); transition: transform .45s cubic-bezier(.2,.8,.2,1); }
+.btn-main:hover::before { transform: translateY(0); }
+.btn-main:hover { color: #0B1636; border-color: transparent; }
+.btn-ghost { background: transparent; color: var(--brand); border-color: var(--brand); }
+.btn-ghost:hover { background: var(--surface-2); }
+.btn .arrow { transition: transform .3s; }
+.btn:hover .arrow { transform: translateX(4px); }
+.btn-sm { padding: 10px 20px; font-size: 15px; }
+
+/* Hero */
+.hero { position: relative; padding-block: 48px 40px; overflow-x: clip; }
+.hero-grid { display: flex; flex-wrap: wrap; gap: 48px; align-items: center; }
+.hero-copy { flex: 1 1 460px; min-width: 0; position: relative; z-index: 2; display: flex; flex-direction: column; gap: 22px; }
+.hero-title { font-weight: 800; font-size: clamp(44px, 6.4vw, 80px); line-height: 1.02; letter-spacing: -.02em; }
+.hero-title .line { display: block; overflow: hidden; padding-bottom: .06em; }
+.hero-title .line > span { display: inline-block; }
+.ink { position: relative; display: inline-block; color: var(--brand); }
+.ink-pink { color: var(--pink-text); }
+.ink-cyan { color: var(--cyan-text); }
+.hero-lede { font-size: 19px; color: var(--muted); max-width: 33ch; margin: 0; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.hero-proof { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 15px; color: var(--muted); margin: 0; padding: 0; list-style: none; }
+.hero-proof li { display: flex; align-items: center; gap: 8px; }
+.hero-proof li::before { content: ""; width: 10px; height: 10px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--c, var(--cyan)); }
+.swoosh { position: absolute; left: -12%; top: -12%; width: 124%; height: auto; pointer-events: none; }
+
+.hero-art { flex: 1 1 420px; min-width: 0; position: relative; aspect-ratio: 1 / 1; max-width: 520px; margin-inline: auto; width: 100%; }
+.blob { position: absolute; inset: 8% 6% 6% 8%; border-radius: 46% 54% 48% 52% / 52% 44% 56% 48%; background: var(--surface-2); }
+.sticker { position: absolute; width: 40%; aspect-ratio: 4 / 5; background: var(--surface); border-radius: var(--radius); border: 3px solid var(--surface); box-shadow: 0 0 0 2px var(--brand), 0 18px 40px rgba(14,27,61,.14); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--brand); text-align: center; padding: 12px; }
+.sticker svg { width: 46%; height: auto; }
+.sticker .tag { font-family: var(--display); font-weight: 700; font-size: 17px; }
+.sticker .note { font-size: 12px; color: var(--muted); }
+.sticker .swatch { position: absolute; top: 12px; left: 12px; width: 14px; height: 14px; border-radius: 50%; background: var(--c); }
+.s1 { left: 4%; top: 6%; transform: rotate(-8deg); }
+.s2 { right: 3%; top: 18%; transform: rotate(6deg); }
+.s3 { left: 27%; bottom: 1%; transform: rotate(-2deg); }
+.drop { position: absolute; width: 34px; height: 34px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--c); }
+.drop::after { content: ""; position: absolute; top: 22%; right: 24%; width: 22%; height: 22%; border-radius: 50%; background: rgba(255,255,255,.7); }
+.badge { position: absolute; right: -2%; bottom: 18%; background: var(--yellow); color: #0B1636; font-family: var(--display); font-weight: 800; font-size: 16px; padding: 12px 18px; border-radius: 999px; transform: rotate(6deg); box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px #0B1636; }
+
+/* Marquee */
+.marquee { border-block: 2px solid var(--brand); background: var(--surface); overflow: hidden; margin-top: 28px; }
+.marquee-track { display: flex; width: max-content; gap: 0; }
+.marquee-track span { font-family: var(--display); font-weight: 700; font-size: 22px; color: var(--brand); padding: 14px 22px; display: inline-flex; align-items: center; gap: 22px; white-space: nowrap; }
+.marquee-track span::after { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--c); }
+
+/* Sections */
+section.block { padding-block: 88px; }
+.section-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 36px; }
+.section-head h2 { font-size: clamp(30px, 3.6vw, 42px); font-weight: 700; }
+.section-head p { margin: 8px 0 0; color: var(--muted); }
+
+.promises { background: var(--footer); color: #FFFFFF; position: relative; }
+.promises h3 { color: #FFFFFF; font-size: 22px; }
+.promises p { color: var(--footer-fg); margin: 8px 0 0; }
+.promise-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 36px; }
+.promise { display: flex; flex-direction: column; gap: 4px; }
+.promise .mark { width: 44px; height: 44px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--c); margin-bottom: 14px; }
+.wave { display: block; width: 100%; height: 56px; }
+
+.products { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 18px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; color: var(--fg); display: flex; flex-direction: column; overflow: hidden; transition: translate .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s; }
+.tile:hover { translate: 0 -6px; box-shadow: 0 18px 36px rgba(14,27,61,.12); }
+.tile-art { aspect-ratio: 1 / 1; background: var(--surface-2); display: flex; align-items: center; justify-content: center; color: var(--brand); position: relative; overflow: hidden; }
+.tile-art::before { content: ""; position: absolute; width: 58%; aspect-ratio: 1; border-radius: 50%; background: var(--c); opacity: .22; transform: scale(.4); transition: transform .5s cubic-bezier(.2,.8,.2,1); }
+.tile:hover .tile-art::before { transform: scale(1); }
+.tile-art svg { width: 76px; height: 76px; position: relative; }
+.tile-body { padding: 16px 18px 20px; display: flex; flex-direction: column; gap: 2px; }
+.tile-name { font-family: var(--display); font-weight: 600; font-size: 19px; color: var(--brand); }
+.tile-detail { font-size: 14px; color: var(--muted); }
+.tile-price { font-weight: 700; margin-top: 8px; font-variant-numeric: tabular-nums; }
+
+.steps-wrap { background: var(--surface-2); }
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 22px; counter-reset: s; }
+.step { background: var(--surface); border-radius: var(--radius); padding: 28px; display: flex; flex-direction: column; gap: 10px; }
+.step .num { width: 48px; height: 48px; border-radius: 50%; background: var(--c); color: #0B1636; font-family: var(--display); font-weight: 800; font-size: 19px; display: flex; align-items: center; justify-content: center; }
+.step h3 { font-size: 20px; font-weight: 600; }
+.step p { margin: 0; color: var(--muted); }
+
+.split { display: flex; flex-wrap: wrap; gap: 48px; align-items: center; }
+.split > * { flex: 1 1 420px; min-width: 0; }
+.photo-ph { aspect-ratio: 4 / 3; border-radius: 28px; background: var(--surface-2); display: flex; align-items: center; justify-content: center; text-align: center; padding: 24px; color: var(--brand); font-family: var(--display); font-weight: 600; position: relative; overflow: hidden; }
+.photo-ph .drop { width: 26px; height: 26px; }
+.split-copy { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+.split-copy h2 { font-size: clamp(30px, 3.6vw, 40px); }
+.split-copy p { margin: 0; color: var(--muted); max-width: 52ch; }
+
+.biz { background: var(--surface); border: 1px solid var(--line); border-radius: 28px; padding: 36px; display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: space-between; }
+.biz h2 { font-size: 28px; }
+.biz p { margin: 6px 0 0; color: var(--muted); }
+
+.feed { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.feed div { aspect-ratio: 1; border-radius: 18px; background: var(--surface-2); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: var(--muted); transition: rotate .3s, scale .3s; }
+.feed div:hover { rotate: -2deg; scale: 1.03; }
+
+.cta { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.cta h2 { font-size: clamp(34px, 4.6vw, 54px); font-weight: 800; }
+.cta p { margin: 0; color: var(--muted); max-width: 46ch; }
+
+.form-block { padding-top: 0; }
+.order { max-width: 760px; margin: 0 auto; background: var(--surface); border: 1px solid var(--line); border-radius: 28px; padding: 36px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 20px; box-shadow: 0 24px 60px rgba(14,27,61,.08); }
+.order-head { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 8px; }
+.order-head h2 { font-size: clamp(26px, 3vw, 34px); }
+.order-head p { margin: 0; color: var(--muted); }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field.wide { grid-column: 1 / -1; }
+.field label { font-family: var(--display); font-weight: 600; font-size: 14px; color: var(--brand); }
+.field input, .field select, .field textarea { font: inherit; font-size: 16px; color: var(--fg); background: var(--bg); border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px; width: 100%; transition: border-color .2s, box-shadow .2s; }
+.field textarea { resize: vertical; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 4px color-mix(in srgb, var(--cyan) 25%, transparent); }
+.field.invalid input, .field.invalid select { border-color: var(--pink); }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.order-foot { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; }
+.order-foot .btn { cursor: pointer; font-family: var(--display); }
+.order-foot .btn[disabled] { opacity: .6; cursor: progress; }
+.order-msg { margin: 0; font-weight: 600; color: var(--muted); }
+.order-msg.ok { color: var(--cyan-text); }
+.order-msg.err { color: var(--pink-text); }
+@media (max-width: 640px) { .order { grid-template-columns: 1fr; padding: 24px; } }
+footer.site { background: var(--footer); color: var(--footer-fg); padding-block: 44px 56px; font-size: 15px; }
+.foot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 32px; }
+.foot-grid h3 { color: #FFFFFF; font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+.foot-grid a { color: #FFFFFF; }
+.foot-col { display: flex; flex-direction: column; gap: 4px; }
+.logo-plate { background: #FFFFFF; border-radius: 18px; padding: 12px 16px; display: inline-flex; align-self: flex-start; }
+.logo-plate img { height: 66px; width: auto; display: block; }
+.socials { display: flex; gap: 10px; }
+.socials a { width: 44px; height: 44px; border-radius: 50%; background: #1A2A57; display: inline-flex; align-items: center; justify-content: center; color: #FFFFFF; transition: background .25s, transform .25s; }
+.socials a:hover { background: var(--pink); transform: translateY(-3px); }
+
+.chat { position: fixed; right: 18px; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 10px; z-index: 30; }
+.chat a { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #FFFFFF; box-shadow: 0 0 0 3px #FFFFFF, 0 10px 24px rgba(11,22,54,.3); transition: scale .25s; }
+.chat a:hover { scale: 1.08; }
+.chat .msg { background: #0A84D6; }
+.chat .wa { background: #1E9E57; }
+
+@media (max-width: 860px) {
+  .menu-btn { display: inline-flex; order: 2; }
+  .head-actions { order: 1; margin-left: auto; }
+  nav.main { order: 3; flex-basis: 100%; flex-direction: column; gap: 0; display: none; padding-bottom: 8px; }
+  nav.main.open { display: flex; }
+  nav.main a { padding-block: 12px; border-bottom: 1px solid var(--line); }
+}
+@media (max-width: 640px) {
+  .brand img { height: 48px; }
+  .head-actions .btn { display: none; }
+  section.block { padding-block: 64px; }
+  .biz { padding: 26px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
 </style>
 
 </head>
 <body>
+<div class="topbar"><div class="wrap">
+  <span><strong>No minimum order.</strong> Even just one.</span>
+  <span class="dot" aria-hidden="true"></span>
+  <span>Also on <a href="#">Shopee</a> · <a href="#">Lazada</a> · <a href="#">TikTok Shop</a></span>
+</div></div>
 
-
-<div style="font-family: 'Nunito Sans', sans-serif; color: #1F2430; background: #FAF8F4; min-height: 100vh; position: relative;">
-
-  <!-- Marketplace bar -->
-  <div style="background: #1F3A68; color: #FFFFFF; font-size: 14px; padding: 10px 24px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; align-items: center;">
-    <span style="font-weight: 700;">No minimum order. Even just one.</span>
-    <span aria-hidden="true" style="opacity: 0.5;">|</span>
-    <span>Also on</span>
-    <a href="#" style="color: #FFFFFF; font-weight: 700;">Shopee</a>
-    <a href="#" style="color: #FFFFFF; font-weight: 700;">Lazada</a>
-    <a href="#" style="color: #FFFFFF; font-weight: 700;">TikTok Shop</a>
+<header class="site" id="siteHeader"><div class="wrap">
+  <a class="brand" href="#" aria-label="EzyPrint home"><img src="assets/ezyprint-logo-small.webp" alt="EzyPrint, personalized printing and souvenirs"></a>
+  <button class="icon-btn menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mainNav" id="menuBtn"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
+  <nav class="main" aria-label="Main" id="mainNav">
+    <a href="#shop">Shop</a><a href="#events">Weddings &amp; Events</a><a href="#how">How It Works</a><a href="#work">Our Work</a><a href="#">About</a><a href="#">FAQ</a>
+  </nav>
+  <div class="head-actions">
+    <button class="icon-btn" type="button" aria-label="Cart" id="cartBtn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/><circle cx="10" cy="20" r="1.2"/><circle cx="17" cy="20" r="1.2"/></svg>
+    </button>
+    <a class="btn btn-main btn-sm magnetic" href="#order">Start your order</a>
   </div>
+</div></header>
 
-  <!-- Header -->
-  <header style="max-width: 1200px; margin: 0 auto; padding: 20px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
-    <a href="#" style="display: flex; align-items: center;">
-      <img src="assets/ezyprint-logo.png" alt="EzyPrint, personalized printing and souvenirs" style="height: 72px; width: auto; display: block;">
-    </a>
-    <nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 8px 24px; font-family: 'Poppins', sans-serif; font-weight: 500; font-size: 15px;">
-      <a href="#shop" style="text-decoration: none;">Shop</a>
-      <a href="#events" style="text-decoration: none;">Weddings &amp; Events</a>
-      <a href="#how" style="text-decoration: none;">How It Works</a>
-      <a href="#work" style="text-decoration: none;">Our Work</a>
-      <a href="#" style="text-decoration: none;">About</a>
-      <a href="#" style="text-decoration: none;">FAQ</a>
-    </nav>
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <a href="#" aria-label="Cart" style="width: 44px; height: 44px; border-radius: 999px; display: flex; align-items: center; justify-content: center; color: #1F3A68;">
-        <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"></path><circle cx="10" cy="20" r="1.2"></circle><circle cx="17" cy="20" r="1.2"></circle></svg>
-      </a>
-      <a href="#order" class="btn-main" style="background: #1F3A68; color: #FFFFFF; text-decoration: none; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 15px; padding: 12px 22px; border-radius: 999px;">Start your order</a>
-    </div>
-  </header>
+<main>
+<section class="hero"><div class="wrap">
+  <div class="hero-grid">
+    <div class="hero-copy">
 
-  <!-- Hero -->
-  <section style="max-width: 1200px; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 48px; align-items: center;">
-    <div style="flex: 1 1 420px; min-width: 0;">
-      <p style="margin: 0 0 16px; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; color: #3F7CB5;">Custom printing in Quezon City</p>
-      <h1 style="margin: 0 0 20px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: clamp(40px, 5vw, 60px); line-height: 1.1; color: #1F3A68;">Got an idea?<br>Let's print it.</h1>
-      <p style="margin: 0 0 32px; font-size: 19px; line-height: 1.6; max-width: 520px;">Shirts, caps, mugs, stickers and souvenirs, made properly. Send us a sketch, a photo, or a finished design. One piece or a hundred, it gets the same care.</p>
-      <div style="display: flex; flex-wrap: wrap; gap: 12px;">
-        <a href="#order" class="btn-main" style="background: #1F3A68; color: #FFFFFF; text-decoration: none; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 16px; padding: 16px 28px; border-radius: 999px;">Start your order</a>
-        <a href="#shop" class="btn-ghost" style="border: 2px solid #1F3A68; color: #1F3A68; text-decoration: none; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 16px; padding: 14px 26px; border-radius: 999px;">Shop products</a>
+      <p class="eyebrow hero-eyebrow">Custom printing in Quezon City</p>
+      <h1 class="hero-title">
+        <span class="line"><span>Got an idea?</span></span>
+        <span class="line"><span>Let's <span class="ink ink-pink">print</span> <span class="ink ink-cyan">it.</span></span></span>
+      </h1>
+      <p class="hero-lede">Shirts, caps, mugs, stickers and souvenirs, made properly. Send a sketch, a photo or a finished design. One piece or a hundred, it gets the same care.</p>
+      <div class="hero-actions">
+        <a class="btn btn-main magnetic" href="#order">Start your order <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn btn-ghost magnetic" href="#shop">Shop products</a>
       </div>
+      <ul class="hero-proof">
+        <li style="--c: var(--pink)">Design help included</li>
+        <li style="--c: var(--yellow)">Pick-up or delivery</li>
+        <li style="--c: var(--cyan)">GCash and Maya</li>
+      </ul>
     </div>
-    <div style="flex: 1 1 420px; min-width: 0; position: relative;">
-      <div style="background: #E5EEF7; border-radius: 28px; aspect-ratio: 5 / 4; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #1F3A68; text-align: center; padding: 24px; box-sizing: border-box;">
-        <svg aria-hidden="true" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"></rect><circle cx="9" cy="10" r="2"></circle><path d="m21 16-5-5-8 9"></path></svg>
-        <span style="font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 18px;">[Kit photo: shirt, cap, mug and stickers with one design]</span>
-        <span style="font-size: 15px;">Mockup until the sample shoot is done</span>
-      </div>
-      <div style="position: absolute; top: -18px; right: 18px; background: #F2B43C; color: #1F2430; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 15px; padding: 12px 18px; border-radius: 999px; transform: rotate(4deg);">Even just one!</div>
-    </div>
-  </section>
 
-  <!-- Wave divider -->
-  <svg aria-hidden="true" viewBox="0 0 1440 80" preserveAspectRatio="none" style="display: block; width: 100%; height: 60px;"><path d="M0 50 C 360 0, 720 90, 1440 30 L1440 80 L0 80 Z" fill="#1F3A68"></path><path d="M0 58 C 360 8, 720 98, 1440 38" fill="none" stroke="#F2B43C" stroke-width="4"></path></svg>
-
-  <!-- Promises -->
-  <section style="background: #1F3A68; color: #FFFFFF; padding: 48px 24px 64px;">
-    <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 32px;">
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <h2 style="margin: 0; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 22px;">Bring any idea</h2>
-        <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #DCE6F2;">No finished design? No problem. A doodle or a photo is enough to start. We'll help you make it look great.</p>
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <h2 style="margin: 0; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 22px;">No minimum order</h2>
-        <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #DCE6F2;">Need just one mug? That's fine. Every order gets the same care, big or small.</p>
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <h2 style="margin: 0; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 22px;">Made properly</h2>
-        <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #DCE6F2;">Good blanks, clean prints, checked before they leave. Fair prices, not the cheapest.</p>
-      </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="blob"></div>
+      <svg class="swoosh" viewBox="0 0 760 260" fill="none" aria-hidden="true">
+        <path d="M20 230 C 180 60, 460 10, 740 120" stroke="#FFB703" stroke-width="16" stroke-linecap="round" opacity=".55"/>
+        <path d="M40 250 C 210 90, 470 50, 730 150" stroke="#EC1E79" stroke-width="14" stroke-linecap="round" opacity=".45"/>
+        <path d="M70 262 C 240 120, 480 90, 720 180" stroke="#12C3E0" stroke-width="14" stroke-linecap="round" opacity=".45"/>
+      </svg>
+      <div class="sticker s1" style="--c: var(--pink)"><span class="swatch"></span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 3 6l2 4 2-1v12h10V9l2 1 2-4-5-3a4 4 0 0 1-8 0z"/></svg>
+        <span class="tag">Shirts</span><span class="note">[your design here]</span></div>
+      <div class="sticker s2" style="--c: var(--cyan)"><span class="swatch"></span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6h11v11a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3zM16 9h2a2 2 0 0 1 0 4h-2"/></svg>
+        <span class="tag">Mugs</span><span class="note">[your design here]</span></div>
+      <div class="sticker s3" style="--c: var(--yellow)"><span class="swatch"></span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15a8 8 0 0 1 16 0zM4 15h17M12 7V5"/></svg>
+        <span class="tag">Caps</span><span class="note">[your design here]</span></div>
+      <span class="drop" style="--c: var(--pink); left: 2%; top: 4%;"></span>
+      <span class="drop" style="--c: var(--yellow); right: 30%; top: 0%; width: 24px; height: 24px;"></span>
+      <span class="drop" style="--c: var(--cyan); left: 6%; bottom: 14%; width: 26px; height: 26px;"></span>
+      <span class="drop" style="--c: var(--pink); right: 8%; bottom: 4%; width: 20px; height: 20px;"></span>
+      <span class="badge">Even just one!</span>
     </div>
-  </section>
-
-  <!-- Products -->
-  <section id="shop" style="max-width: 1200px; margin: 0 auto; padding: 80px 24px;">
-    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 32px;">
-      <div>
-        <h2 style="margin: 0 0 8px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 36px; color: #1F3A68;">What we print</h2>
-        <p style="margin: 0; font-size: 17px;">Pick a product to shop, or send us your idea for something custom.</p>
-      </div>
-      <a href="#" style="font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 15px;">See all products</a>
-    </div>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-      
-        <a href="#" class="tile" style="background: #FFFFFF; border-radius: 20px; text-decoration: none; color: #1F2430; display: flex; flex-direction: column; overflow: hidden; transition: transform 0.15s; border: 1px solid #E1E7EF;">
-          <div style="background: #E5EEF7; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; color: #1F3A68;">
-            <svg aria-hidden="true" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 3 6l2 4 2-1v12h10V9l2 1 2-4-5-3a4 4 0 0 1-8 0z"></path></svg>
-          </div>
-          <div style="padding: 16px 18px 20px; display: flex; flex-direction: column; gap: 4px;">
-            <span style="font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 18px; color: #1F3A68;">Shirts</span>
-            <span style="font-size: 14px; color: #4A5260;">Front and back prints</span>
-            <span style="font-size: 15px; font-weight: 700; margin-top: 6px;">from ₱[PRICE]</span>
-          </div>
-        </a>
-      
-        <a href="#" class="tile" style="background: #FFFFFF; border-radius: 20px; text-decoration: none; color: #1F2430; display: flex; flex-direction: column; overflow: hidden; transition: transform 0.15s; border: 1px solid #E1E7EF;">
-          <div style="background: #E5EEF7; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; color: #1F3A68;">
-            <svg aria-hidden="true" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15a8 8 0 0 1 16 0zM4 15h17M12 7V5"></path></svg>
-          </div>
-          <div style="padding: 16px 18px 20px; display: flex; flex-direction: column; gap: 4px;">
-            <span style="font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 18px; color: #1F3A68;">Caps</span>
-            <span style="font-size: 14px; color: #4A5260;">Your logo or text</span>
-            <span style="font-size: 15px; font-weight: 700; margin-top: 6px;">from ₱[PRICE]</span>
-          </div>
-        </a>
-      
-        <a href="#" class="tile" style="background: #FFFFFF; border-radius: 20px; text-decoration: none; color: #1F2430; display: flex; flex-direction: column; overflow: hidden; transition: transform 0.15s; border: 1px solid #E1E7EF;">
-          <div style="background: #E5EEF7; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; color: #1F3A68;">
-            <svg aria-hidden="true" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6h11v11a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3zM16 9h2a2 2 0 0 1 0 4h-2"></path></svg>
-          </div>
-          <div style="padding: 16px 18px 20px; display: flex; flex-direction: column; gap: 4px;">
-            <span style="font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 18px; color: #1F3A68;">Mugs</span>
-            <span style="font-size: 14px; color: #4A5260;">Mugs and cups</span>
-            <span style="font-size: 15px; font-weight: 700; margin-top: 6px;">from ₱[PRICE]</span>
-          </div>
-        </a>
-      
-        <a href="#" class="tile" style="background: #FFFFFF; border-radius: 20px; text-decoration: none; color: #1F2430; display: flex; flex-direction: column; overflow: hidden; transition: transform 0.15s; border: 1px solid #E1E7EF;">
-          <div style="background: #E5EEF7; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; color: #1F3A68;">
-            <svg aria-hidden="true" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v9l-7 7H4zM13 20v-7h7"></path></svg>
-          </div>
-          <div style="padding: 16px 18px 20px; display: flex; flex-direction: column; gap: 4px;">
-            <span style="font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 18px; color: #1F3A68;">Stickers</span>
-            <span style="font-size: 14px; color: #4A5260;">Any shape, any size</span>
-            <span style="font-size: 15px; font-weight: 700; margin-top: 6px;">from ₱[PRICE]</span>
-          </div>
-        </a>
-      
-        <a href="#" class="tile" style="background: #FFFFFF; border-radius: 20px; text-decoration: none; color: #1F2430; display: flex; flex-direction: column; overflow: hidden; transition: transform 0.15s; border: 1px solid #E1E7EF;">
-          <div style="background: #E5EEF7; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; color: #1F3A68;">
-            <svg aria-hidden="true" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM11.8 9.8 20 18l-2 2-2-2-1 1-2-2"></path></svg>
-          </div>
-          <div style="padding: 16px 18px 20px; display: flex; flex-direction: column; gap: 4px;">
-            <span style="font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 18px; color: #1F3A68;">Souvenirs</span>
-            <span style="font-size: 14px; color: #4A5260;">Keychains, magnets, pins</span>
-            <span style="font-size: 15px; font-weight: 700; margin-top: 6px;">from ₱[PRICE]</span>
-          </div>
-        </a>
-      
-    </div>
-  </section>
-
-  <!-- How it works -->
-  <section id="how" style="background: #E5EEF7; padding: 80px 24px;">
-    <div style="max-width: 1200px; margin: 0 auto;">
-      <h2 style="margin: 0 0 40px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 36px; color: #1F3A68; text-align: center;">How it works</h2>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px;">
-        <div style="background: #FFFFFF; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 12px;">
-          <span style="width: 44px; height: 44px; border-radius: 999px; background: #1F3A68; color: #FFFFFF; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 18px; display: flex; align-items: center; justify-content: center;">1</span>
-          <h3 style="margin: 0; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 20px; color: #1F3A68;">Send your idea</h3>
-          <p style="margin: 0; font-size: 16px; line-height: 1.6;">Upload a sketch, photo or file, or message us on Messenger or WhatsApp.</p>
-        </div>
-        <div style="background: #FFFFFF; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 12px;">
-          <span style="width: 44px; height: 44px; border-radius: 999px; background: #1F3A68; color: #FFFFFF; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 18px; display: flex; align-items: center; justify-content: center;">2</span>
-          <h3 style="margin: 0; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 20px; color: #1F3A68;">Approve your preview</h3>
-          <p style="margin: 0; font-size: 16px; line-height: 1.6;">We design it with you and send a mockup and price. Nothing prints until you say yes.</p>
-        </div>
-        <div style="background: #FFFFFF; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 12px;">
-          <span style="width: 44px; height: 44px; border-radius: 999px; background: #1F3A68; color: #FFFFFF; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 18px; display: flex; align-items: center; justify-content: center;">3</span>
-          <h3 style="margin: 0; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 20px; color: #1F3A68;">Pick up or get it delivered</h3>
-          <p style="margin: 0; font-size: 16px; line-height: 1.6;">Collect it at our Quezon City shop, or we deliver anywhere in the Philippines.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Weddings & events -->
-  <section id="events" style="max-width: 1200px; margin: 0 auto; padding: 80px 24px; display: flex; flex-wrap: wrap; gap: 48px; align-items: center;">
-    <div style="flex: 1 1 420px; min-width: 0; background: #E5EEF7; border-radius: 28px; aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center; text-align: center; padding: 24px; box-sizing: border-box; color: #1F3A68; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 18px;">[Photo: wedding favors, mugs and keychains with names and date]</div>
-    <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
-      <p style="margin: 0; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; color: #3F7CB5;">Weddings, birthdays and events</p>
-      <h2 style="margin: 0; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 36px; line-height: 1.2; color: #1F3A68;">Souvenirs your guests will actually keep</h2>
-      <p style="margin: 0; font-size: 17px; line-height: 1.6;">Mugs, keychains, magnets, pins and stickers with your names, date or event logo. Tell us your theme and we'll put together a pack that fits your budget.</p>
-      <a href="#order" class="btn-main" style="align-self: flex-start; background: #1F3A68; color: #FFFFFF; text-decoration: none; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 16px; padding: 14px 26px; border-radius: 999px;">Plan my souvenirs</a>
-    </div>
-  </section>
-
-  <!-- Small business -->
-  <section style="max-width: 1200px; margin: 0 auto; padding: 0 24px 80px;">
-    <div style="background: #FFFFFF; border: 1px solid #E1E7EF; border-radius: 28px; padding: 40px; display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between;">
-      <div style="flex: 1 1 480px; min-width: 0;">
-        <h2 style="margin: 0 0 8px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 28px; color: #1F3A68;">Starting a small business?</h2>
-        <p style="margin: 0; font-size: 17px; line-height: 1.6;">Staff shirts, branded mugs, logo stickers for your packaging. Start small, reorder anytime.</p>
-      </div>
-      <a href="#order" class="btn-ghost" style="border: 2px solid #1F3A68; color: #1F3A68; text-decoration: none; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 16px; padding: 14px 26px; border-radius: 999px;">Get a starter kit</a>
-    </div>
-  </section>
-
-  <!-- Our work / Instagram -->
-  <section id="work" style="background: #FFFFFF; padding: 80px 24px;">
-    <div style="max-width: 1200px; margin: 0 auto;">
-      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 32px;">
-        <div>
-          <h2 style="margin: 0 0 8px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 36px; color: #1F3A68;">Fresh off the press</h2>
-          <p style="margin: 0; font-size: 17px;">Follow us for new designs and happy customers.</p>
-        </div>
-        <div style="display: flex; gap: 12px;">
-          <a href="#" class="btn-ghost" style="border: 2px solid #1F3A68; color: #1F3A68; text-decoration: none; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 15px; padding: 10px 20px; border-radius: 999px;">Instagram</a>
-          <a href="#" class="btn-ghost" style="border: 2px solid #1F3A68; color: #1F3A68; text-decoration: none; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 15px; padding: 10px 20px; border-radius: 999px;">Facebook</a>
-        </div>
-      </div>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px;">
-        
-          <div style="background: #E5EEF7; border-radius: 16px; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; color: #1F3A68; font-size: 14px; font-weight: 600;">[IG post]</div>
-        
-          <div style="background: #E5EEF7; border-radius: 16px; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; color: #1F3A68; font-size: 14px; font-weight: 600;">[IG post]</div>
-        
-          <div style="background: #E5EEF7; border-radius: 16px; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; color: #1F3A68; font-size: 14px; font-weight: 600;">[IG post]</div>
-        
-          <div style="background: #E5EEF7; border-radius: 16px; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; color: #1F3A68; font-size: 14px; font-weight: 600;">[IG post]</div>
-        
-          <div style="background: #E5EEF7; border-radius: 16px; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; color: #1F3A68; font-size: 14px; font-weight: 600;">[IG post]</div>
-        
-          <div style="background: #E5EEF7; border-radius: 16px; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; color: #1F3A68; font-size: 14px; font-weight: 600;">[IG post]</div>
-        
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section id="order" style="max-width: 1200px; margin: 0 auto; padding: 80px 24px; text-align: center;">
-    <h2 style="margin: 0 0 12px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 44px); color: #1F3A68;">Your idea, made real.</h2>
-    <p style="margin: 0 auto 28px; font-size: 18px; line-height: 1.6; max-width: 560px;">Tell us what you're thinking. We'll reply with a preview and a price, usually within [X hours].</p>
-    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;">
-      <a href="#" class="btn-main" style="background: #1F3A68; color: #FFFFFF; text-decoration: none; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 16px; padding: 16px 28px; border-radius: 999px;">Start your order</a>
-      <a href="#" class="btn-ghost" style="border: 2px solid #1F3A68; color: #1F3A68; text-decoration: none; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 16px; padding: 14px 26px; border-radius: 999px;">Message us</a>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <svg aria-hidden="true" viewBox="0 0 1440 80" preserveAspectRatio="none" style="display: block; width: 100%; height: 60px;"><path d="M0 40 C 420 90, 900 0, 1440 50 L1440 80 L0 80 Z" fill="#1F3A68"></path><path d="M0 48 C 420 98, 900 8, 1440 58" fill="none" stroke="#F2B43C" stroke-width="4"></path></svg>
-  <footer style="background: #1F3A68; color: #DCE6F2; padding: 40px 24px 48px;">
-    <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; font-size: 15px; line-height: 1.7;">
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <img src="assets/ezyprint-logo.png" alt="EzyPrint" style="width: 200px; height: auto; display: block;">
-        <span>Your idea, made real. Even if it's just one mug.</span>
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 4px;">
-        <span style="font-family: 'Poppins', sans-serif; font-weight: 600; color: #FFFFFF;">Visit the shop</span>
-        <span>[Street address], Quezon City</span>
-        <span>[Opening hours]</span>
-        <span>Pick-up and delivery nationwide</span>
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 4px;">
-        <span style="font-family: 'Poppins', sans-serif; font-weight: 600; color: #FFFFFF;">Also find us on</span>
-        <a href="#" style="color: #FFFFFF;">Shopee</a>
-        <a href="#" style="color: #FFFFFF;">Lazada</a>
-        <a href="#" style="color: #FFFFFF;">TikTok Shop</a>
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 12px;">
-        <span style="font-family: 'Poppins', sans-serif; font-weight: 600; color: #FFFFFF;">Say hi</span>
-        <div style="display: flex; gap: 10px;">
-          <a href="#" aria-label="Instagram" style="width: 44px; height: 44px; border-radius: 999px; background: #2A4C85; color: #FFFFFF; display: flex; align-items: center; justify-content: center;">
-            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="0.6"></circle></svg>
-          </a>
-          <a href="#" aria-label="Facebook" style="width: 44px; height: 44px; border-radius: 999px; background: #2A4C85; color: #FFFFFF; display: flex; align-items: center; justify-content: center;">
-            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h-2.5A3.5 3.5 0 0 0 9 6.5V21M6 11h8"></path></svg>
-          </a>
-          <a href="#" aria-label="Messenger" style="width: 44px; height: 44px; border-radius: 999px; background: #2A4C85; color: #FFFFFF; display: flex; align-items: center; justify-content: center;">
-            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C7 3 3 6.6 3 11.2c0 2.5 1.2 4.7 3.1 6.2V21l3-1.7c.9.3 1.9.4 2.9.4 5 0 9-3.6 9-8.2S17 3 12 3z"></path><path d="m7.5 13.5 3-3 2.5 2 3.5-3"></path></svg>
-          </a>
-          <a href="#" aria-label="WhatsApp" style="width: 44px; height: 44px; border-radius: 999px; background: #2A4C85; color: #FFFFFF; display: flex; align-items: center; justify-content: center;">
-            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"></path><path d="M9.5 9.5c.3 1.8 2 3.6 4 4l1-1 1.5.8"></path></svg>
-          </a>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Floating chat buttons -->
-  <div style="position: fixed; right: 20px; bottom: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 10;">
-    <a href="#" aria-label="Chat on Messenger" style="width: 56px; height: 56px; border-radius: 999px; background: #3F7CB5; color: #FFFFFF; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(31,58,104,0.25);">
-      <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C7 3 3 6.6 3 11.2c0 2.5 1.2 4.7 3.1 6.2V21l3-1.7c.9.3 1.9.4 2.9.4 5 0 9-3.6 9-8.2S17 3 12 3z"></path><path d="m7.5 13.5 3-3 2.5 2 3.5-3"></path></svg>
-    </a>
-    <a href="#" aria-label="Chat on WhatsApp" style="width: 56px; height: 56px; border-radius: 999px; background: #1F3A68; color: #FFFFFF; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(31,58,104,0.25);">
-      <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"></path><path d="M9.5 9.5c.3 1.8 2 3.6 4 4l1-1 1.5.8"></path></svg>
-    </a>
   </div>
+</div>
+<div class="marquee" aria-label="Products we print"><div class="marquee-track" id="marquee">
+  <span style="--c: var(--pink)">Shirts</span><span style="--c: var(--yellow)">Caps</span><span style="--c: var(--cyan)">Mugs</span><span style="--c: var(--pink)">Stickers</span><span style="--c: var(--yellow)">Keychains</span><span style="--c: var(--cyan)">Magnets</span><span style="--c: var(--pink)">Pins</span><span style="--c: var(--yellow)">Wedding favors</span><span style="--c: var(--cyan)">Event souvenirs</span>
+</div></div>
+</section>
 
+<svg class="wave" viewBox="0 0 1440 56" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 C 360 0, 760 70, 1440 20 L1440 56 L0 56 Z" fill="var(--footer)"/><path d="M0 46 C 360 6, 760 76, 1440 26" fill="none" stroke="#FFB703" stroke-width="3"/></svg>
+<section class="block promises" style="padding-top: 56px;"><div class="wrap">
+  <div class="promise-grid">
+    <div class="promise" data-reveal><span class="mark" style="--c: var(--pink)"></span><h3>Bring any idea</h3><p>No finished design? A doodle or a photo is enough to start. We'll help you make it look great.</p></div>
+    <div class="promise" data-reveal><span class="mark" style="--c: var(--yellow)"></span><h3>No minimum order</h3><p>Need just one mug? That's fine. Every order gets the same care, big or small.</p></div>
+    <div class="promise" data-reveal><span class="mark" style="--c: var(--cyan)"></span><h3>Made properly</h3><p>Good blanks, clean prints, checked before they leave. Fair prices, not the cheapest.</p></div>
+  </div>
+</div></section>
+
+<section class="block" id="shop"><div class="wrap">
+  <div class="section-head" data-reveal>
+    <div><h2>What we print</h2><p>Pick a product to shop, or send us your idea for something custom.</p></div>
+    <a class="btn btn-ghost btn-sm" href="#">See all products <span class="arrow" aria-hidden="true">→</span></a>
+  </div>
+  <div class="products">
+    <a class="tile" href="#" style="--c: var(--pink)" data-reveal><div class="tile-art"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3 3 6l2 4 2-1v12h10V9l2 1 2-4-5-3a4 4 0 0 1-8 0z"/></svg></div><div class="tile-body"><span class="tile-name">Shirts</span><span class="tile-detail">Front and back prints</span><span class="tile-price">from ₱[PRICE]</span></div></a>
+    <a class="tile" href="#" style="--c: var(--yellow)" data-reveal><div class="tile-art"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15a8 8 0 0 1 16 0zM4 15h17M12 7V5"/></svg></div><div class="tile-body"><span class="tile-name">Caps</span><span class="tile-detail">Your logo or text</span><span class="tile-price">from ₱[PRICE]</span></div></a>
+    <a class="tile" href="#" style="--c: var(--cyan)" data-reveal><div class="tile-art"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6h11v11a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3zM16 9h2a2 2 0 0 1 0 4h-2"/></svg></div><div class="tile-body"><span class="tile-name">Mugs</span><span class="tile-detail">Mugs and cups</span><span class="tile-price">from ₱[PRICE]</span></div></a>
+    <a class="tile" href="#" style="--c: var(--pink)" data-reveal><div class="tile-art"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v9l-7 7H4zM13 20v-7h7"/></svg></div><div class="tile-body"><span class="tile-name">Stickers</span><span class="tile-detail">Any shape, any size</span><span class="tile-price">from ₱[PRICE]</span></div></a>
+    <a class="tile" href="#" style="--c: var(--yellow)" data-reveal><div class="tile-art"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM11.8 9.8 20 18l-2 2-2-2-1 1-2-2"/></svg></div><div class="tile-body"><span class="tile-name">Souvenirs</span><span class="tile-detail">Keychains, magnets, pins</span><span class="tile-price">from ₱[PRICE]</span></div></a>
+  </div>
+</div></section>
+
+<section class="block steps-wrap" id="how"><div class="wrap">
+  <div class="section-head" data-reveal><div><h2>How it works</h2><p>Three steps from idea to something you can hold.</p></div></div>
+  <div class="steps">
+    <div class="step" style="--c: var(--pink)" data-reveal><span class="num">1</span><h3>Send your idea</h3><p>Upload a sketch, photo or file, or message us on Messenger or WhatsApp.</p></div>
+    <div class="step" style="--c: var(--yellow)" data-reveal><span class="num">2</span><h3>Approve your preview</h3><p>We design it with you and send a mockup and price. Nothing prints until you say yes.</p></div>
+    <div class="step" style="--c: var(--cyan)" data-reveal><span class="num">3</span><h3>Pick up or get it delivered</h3><p>Collect it at our Quezon City shop, or we deliver anywhere in the Philippines.</p></div>
+  </div>
+</div></section>
+
+<section class="block" id="events"><div class="wrap split">
+  <div class="photo-ph" data-reveal>[Photo: wedding favors, mugs and keychains with names and date]
+    <span class="drop" style="--c: var(--pink); left: 8%; top: 10%;"></span><span class="drop" style="--c: var(--cyan); right: 10%; bottom: 12%;"></span></div>
+  <div class="split-copy" data-reveal>
+    <p class="eyebrow">Weddings, birthdays and events</p>
+    <h2>Souvenirs your guests will actually keep</h2>
+    <p>Mugs, keychains, magnets, pins and stickers with your names, date or event logo. Tell us your theme and we'll put together a pack that fits your budget.</p>
+    <a class="btn btn-main magnetic" href="#order">Plan my souvenirs <span class="arrow" aria-hidden="true">→</span></a>
+  </div>
+</div></section>
+
+<section class="wrap" style="padding-bottom: 88px;">
+  <div class="biz" data-reveal>
+    <div style="flex: 1 1 420px; min-width: 0;"><h2>Starting a small business?</h2><p>Staff shirts, branded mugs, logo stickers for your packaging. Start small, reorder anytime.</p></div>
+    <a class="btn btn-ghost magnetic" href="#order">Get a starter kit</a>
+  </div>
+</section>
+
+<section class="block" id="work" style="background: var(--surface);"><div class="wrap">
+  <div class="section-head" data-reveal>
+    <div><h2>Fresh off the press</h2><p>Follow us for new designs and happy customers.</p></div>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;"><a class="btn btn-ghost btn-sm" href="#">Instagram</a><a class="btn btn-ghost btn-sm" href="#">Facebook</a></div>
+  </div>
+  <div class="feed"><div data-reveal>[IG post]</div><div data-reveal>[IG post]</div><div data-reveal>[IG post]</div><div data-reveal>[IG post]</div><div data-reveal>[IG post]</div><div data-reveal>[IG post]</div></div>
+</div></section>
+
+<section class="block" id="order"><div class="wrap cta" data-reveal>
+  <h2>Your idea, made <span class="ink-pink">real.</span></h2>
+  <p>Tell us what you're thinking. We'll reply with a preview and a price, usually within [X hours].</p>
+  <div class="hero-actions" style="justify-content: center;">
+    <a class="btn btn-main magnetic" href="#orderForm">Start your order <span class="arrow" aria-hidden="true">→</span></a>
+    <a class="btn btn-ghost magnetic" href="#">Message us</a>
+  </div>
+</div></section>
+
+<section class="block form-block"><div class="wrap">
+  <form class="order" id="orderForm" novalidate data-reveal>
+    <div class="order-head">
+      <p class="eyebrow">Start your order</p>
+      <h2>Tell us your idea</h2>
+      <p>A sketch in words is enough. We'll reply with a preview and a price. Design files? Send them to us on Messenger or WhatsApp after.</p>
+    </div>
+    <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <div class="field"><label for="f-name">Your name</label><input id="f-name" name="name" required autocomplete="name"></div>
+    <div class="field"><label for="f-contact">Messenger, WhatsApp or email</label><input id="f-contact" name="contact" required placeholder="How should we reach you?"></div>
+    <div class="field"><label for="f-product">What do you want printed?</label>
+      <select id="f-product" name="product"><option>Shirts</option><option>Caps</option><option>Mugs</option><option>Stickers</option><option>Keychains</option><option>Magnets</option><option>Pins</option><option>Wedding / event souvenirs</option><option>Not sure yet</option></select></div>
+    <div class="field"><label for="f-qty">How many?</label><input id="f-qty" name="quantity" type="number" min="1" value="1" inputmode="numeric"></div>
+    <div class="field"><label for="f-date">Needed by (optional)</label><input id="f-date" name="deadline" type="date"></div>
+    <div class="field"><label for="f-deliv">Pick-up or delivery?</label>
+      <select id="f-deliv" name="delivery"><option>Pick-up (Quezon City)</option><option>Delivery</option></select></div>
+    <div class="field wide"><label for="f-idea">Your idea</label><textarea id="f-idea" name="idea" rows="4" placeholder="Shirt for my sister's birthday, she loves cats and the colour teal..."></textarea></div>
+    <div class="order-foot">
+      <button class="btn btn-main" type="submit" id="orderBtn">Send my idea <span class="arrow" aria-hidden="true">→</span></button>
+      <p class="order-msg" id="orderMsg" role="status" aria-live="polite"></p>
+    </div>
+  </form>
+</div></section>
+</main>
+
+<svg class="wave" viewBox="0 0 1440 56" preserveAspectRatio="none" aria-hidden="true"><path d="M0 24 C 420 70, 900 0, 1440 34 L1440 56 L0 56 Z" fill="var(--footer)"/><path d="M0 30 C 420 76, 900 6, 1440 40" fill="none" stroke="#EC1E79" stroke-width="3"/></svg>
+<footer class="site"><div class="wrap foot-grid">
+  <div class="foot-col" style="gap: 12px;">
+    <span class="logo-plate"><img src="assets/ezyprint-logo-small.webp" alt="EzyPrint"></span>
+    <span>Your idea, made real. Even if it's just one mug.</span>
+  </div>
+  <div class="foot-col"><h3>Visit the shop</h3><span>[Street address], Quezon City</span><span>[Opening hours]</span><span>Pick-up and delivery nationwide</span></div>
+  <div class="foot-col"><h3>Also find us on</h3><a href="#">Shopee</a><a href="#">Lazada</a><a href="#">TikTok Shop</a></div>
+  <div class="foot-col"><h3>Say hi</h3>
+    <div class="socials">
+      <a href="#" aria-label="Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6"/></svg></a>
+      <a href="#" aria-label="Facebook"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h-2.5A3.5 3.5 0 0 0 9 6.5V21M6 11h8"/></svg></a>
+      <a href="#" aria-label="Messenger"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3C7 3 3 6.6 3 11.2c0 2.5 1.2 4.7 3.1 6.2V21l3-1.7c.9.3 1.9.4 2.9.4 5 0 9-3.6 9-8.2S17 3 12 3z"/><path d="m7.5 13.5 3-3 2.5 2 3.5-3"/></svg></a>
+      <a href="#" aria-label="WhatsApp"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/><path d="M9.5 9.5c.3 1.8 2 3.6 4 4l1-1 1.5.8"/></svg></a>
+    </div>
+  </div>
+</div></footer>
+
+<div class="chat" id="chat">
+  <a class="msg" href="#" aria-label="Chat on Messenger"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3C7 3 3 6.6 3 11.2c0 2.5 1.2 4.7 3.1 6.2V21l3-1.7c.9.3 1.9.4 2.9.4 5 0 9-3.6 9-8.2S17 3 12 3z"/><path d="m7.5 13.5 3-3 2.5 2 3.5-3"/></svg></a>
+  <a class="wa" href="#" aria-label="Chat on WhatsApp"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/><path d="M9.5 9.5c.3 1.8 2 3.6 4 4l1-1 1.5.8"/></svg></a>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  // Order form: posts to the Google Sheet web app (works on the live site; preview frames block outside requests).
+  var ORDER_URL = 'PASTE_YOUR_WEB_APP_URL_HERE'; // see form-to-sheet/guide.md
+  var form = document.getElementById('orderForm'), msg = document.getElementById('orderMsg'), btn = document.getElementById('orderBtn');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var bad = false;
+    form.querySelectorAll('[required]').forEach(function (i) { var empty = !i.value.trim(); i.parentNode.classList.toggle('invalid', empty); if (empty) bad = true; });
+    msg.className = 'order-msg';
+    if (bad) { msg.textContent = 'Please add your name and how we can reach you.'; msg.classList.add('err'); return; }
+    if (ORDER_URL.indexOf('PASTE') === 0) { msg.textContent = 'The order form is not connected yet. Please message us on Messenger or WhatsApp.'; msg.classList.add('err'); return; }
+    btn.disabled = true; msg.textContent = 'Sending...';
+    fetch(ORDER_URL, { method: 'POST', mode: 'no-cors', body: new URLSearchParams(new FormData(form)) })
+      .then(function () { form.reset(); msg.textContent = 'Got it! We will message you with a preview and a price.'; msg.classList.add('ok'); })
+      .catch(function () { msg.textContent = 'That did not go through. Please message us on Messenger or WhatsApp instead.'; msg.classList.add('err'); })
+      .then(function () { btn.disabled = false; });
+  });
+  var menuBtn = document.getElementById('menuBtn'), nav = document.getElementById('mainNav');
+  menuBtn.addEventListener('click', function () { var o = nav.classList.toggle('open'); menuBtn.setAttribute('aria-expanded', o ? 'true' : 'false'); });
+  var header = document.getElementById('siteHeader');
+  function onScroll() { header.classList.toggle('scrolled', window.scrollY > 8); }
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!window.gsap || reduce) return;
+  if (window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
+
+  // 1. Hero entrance: one orchestrated moment.
+  var swooshPaths = gsap.utils.toArray('.swoosh path');
+  swooshPaths.forEach(function (p) { var L = p.getTotalLength(); gsap.set(p, { strokeDasharray: L, strokeDashoffset: L }); });
+  var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+  tl.from('.hero-eyebrow', { y: 14, opacity: 0, duration: .5 })
+    .from('.hero-title .line > span', { yPercent: 105, duration: .85, stagger: .12 }, '-=.25')
+    .to(swooshPaths, { strokeDashoffset: 0, duration: 1.2, stagger: .14, ease: 'power2.inOut' }, '-=.7')
+    .from('.hero-lede, .hero-actions, .hero-proof', { y: 16, opacity: 0, duration: .6, stagger: .08 }, '-=1')
+    .from('.blob', { scale: .85, opacity: 0, duration: .9 }, '-=1.1')
+    .from('.sticker', { y: 50, rotation: 0, opacity: 0, duration: .8, stagger: .12, ease: 'back.out(1.4)' }, '-=.8')
+    .from('.hero-art .drop', { scale: 0, duration: .5, stagger: .07, ease: 'back.out(2.2)' }, '-=.5')
+    .from('.badge', { scale: .5, rotation: -14, opacity: 0, duration: .6, ease: 'back.out(2)' }, '-=.3')
+    .from('#chat a', { scale: 0, duration: .45, stagger: .1, ease: 'back.out(2)' }, '-=.2');
+
+  // 2. Ambient: drops and stickers float gently.
+  gsap.utils.toArray('.hero-art .drop').forEach(function (d, i) {
+    gsap.to(d, { y: '+=' + (6 + i * 2), duration: 2.6 + i * .4, yoyo: true, repeat: -1, ease: 'sine.inOut', delay: 1.6 });
+  });
+  gsap.utils.toArray('.sticker').forEach(function (s, i) {
+    gsap.to(s, { y: i % 2 ? 6 : -6, duration: 3.2 + i * .3, yoyo: true, repeat: -1, ease: 'sine.inOut', delay: 2 });
+  });
+  gsap.to('.blob', { borderRadius: '54% 46% 52% 48% / 46% 56% 44% 54%', duration: 6, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+
+  // 3. Product marquee: slow loop, pauses on hover.
+  var track = document.getElementById('marquee');
+  track.innerHTML += track.innerHTML;
+  var loop = gsap.to(track, { xPercent: -50, duration: 38, ease: 'none', repeat: -1 });
+  track.addEventListener('mouseenter', function () { gsap.to(loop, { timeScale: 0, duration: .6 }); });
+  track.addEventListener('mouseleave', function () { gsap.to(loop, { timeScale: 1, duration: .6 }); });
+
+  // 4. Scroll reveals.
+  if (window.ScrollTrigger) {
+    ScrollTrigger.batch('[data-reveal]', {
+      start: 'top 88%', once: true,
+      onEnter: function (els) { gsap.from(els, { y: 28, opacity: 0, duration: .7, stagger: .08, ease: 'power2.out', overwrite: true }); }
+    });
+    gsap.to('.swoosh', { yPercent: 18, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+  }
+
+  // 5. Micro-interactions.
+  var fine = window.matchMedia('(pointer: fine)').matches;
+  if (fine) {
+    document.querySelectorAll('.magnetic').forEach(function (b) {
+      b.addEventListener('mousemove', function (e) {
+        var r = b.getBoundingClientRect();
+        gsap.to(b, { x: (e.clientX - r.left - r.width / 2) * .18, y: (e.clientY - r.top - r.height / 2) * .3, duration: .3, ease: 'power2.out' });
+      });
+      b.addEventListener('mouseleave', function () { gsap.to(b, { x: 0, y: 0, duration: .6, ease: 'elastic.out(1, .4)' }); });
+    });
+  }
+  document.querySelectorAll('.tile').forEach(function (t) {
+    var icon = t.querySelector('.tile-art svg');
+    t.addEventListener('mouseenter', function () { gsap.fromTo(icon, { rotation: 0 }, { rotation: 8, duration: .14, yoyo: true, repeat: 3, ease: 'sine.inOut' }); });
+  });
+  document.querySelectorAll('.step').forEach(function (s) {
+    var n = s.querySelector('.num');
+    s.addEventListener('mouseenter', function () { gsap.fromTo(n, { scale: 1 }, { scale: 1.15, duration: .18, yoyo: true, repeat: 1, ease: 'power1.out' }); });
+  });
+  var cart = document.getElementById('cartBtn');
+  cart.addEventListener('click', function () { gsap.fromTo(cart, { rotation: 0 }, { rotation: -12, duration: .1, yoyo: true, repeat: 3 }); });
+})();
+</script>
 
 </body>
 </html>
