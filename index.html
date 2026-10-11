@@ -210,6 +210,8 @@ footer.site { background: var(--footer); color: var(--footer-fg); padding-block:
 .chat { position: fixed; right: 18px; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 10px; z-index: 30; }
 .chat a { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #FFFFFF; box-shadow: 0 0 0 3px #FFFFFF, 0 10px 24px rgba(11,22,54,.3); transition: scale .25s; }
 .chat a:hover { scale: 1.08; }
+.chat { transition: opacity .3s, visibility .3s; }
+.chat.away { opacity: 0; visibility: hidden; }
 .chat .msg { background: #0A84D6; }
 .chat .wa { background: #1E9E57; }
 
@@ -429,10 +431,10 @@ footer.site { background: var(--footer); color: var(--footer-fg); padding-block:
   var form = document.getElementById('orderForm'), msg = document.getElementById('orderMsg'), btn = document.getElementById('orderBtn');
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    var bad = false;
-    form.querySelectorAll('[required]').forEach(function (i) { var empty = !i.value.trim(); i.parentNode.classList.toggle('invalid', empty); if (empty) bad = true; });
+    var firstBad = null;
+    form.querySelectorAll('[required]').forEach(function (i) { var empty = !i.value.trim(); i.parentNode.classList.toggle('invalid', empty); if (empty && !firstBad) firstBad = i; });
     msg.className = 'order-msg';
-    if (bad) { msg.textContent = 'Please add your name and how we can reach you.'; msg.classList.add('err'); return; }
+    if (firstBad) { msg.textContent = 'Please add your name and how we can reach you.'; msg.classList.add('err'); firstBad.focus(); return; }
     if (ORDER_URL.indexOf('PASTE') === 0) { msg.textContent = 'The order form is not connected yet. Please message us on Messenger or WhatsApp.'; msg.classList.add('err'); return; }
     btn.disabled = true; msg.textContent = 'Sending...';
     fetch(ORDER_URL, { method: 'POST', mode: 'no-cors', body: new URLSearchParams(new FormData(form)) })
@@ -440,6 +442,14 @@ footer.site { background: var(--footer); color: var(--footer-fg); padding-block:
       .catch(function () { msg.textContent = 'That did not go through. Please message us on Messenger or WhatsApp instead.'; msg.classList.add('err'); })
       .then(function () { btn.disabled = false; });
   });
+  form.querySelectorAll('[required]').forEach(function (i) {
+    i.addEventListener('input', function () { if (i.value.trim()) i.parentNode.classList.remove('invalid'); });
+  });
+  // Hide the floating chat buttons while the form is on screen so they don't cover the fields.
+  var chat = document.getElementById('chat');
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) { chat.classList.toggle('away', es[0].isIntersecting); }).observe(form);
+  }
   document.querySelectorAll('a[href="#orderForm"]').forEach(function (a) {
     a.addEventListener('click', function () { setTimeout(function () { var f = document.getElementById('f-name'); if (f) f.focus({ preventScroll: true }); }, 700); });
   });

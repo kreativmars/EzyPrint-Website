@@ -16,7 +16,7 @@ function doPost(e) {
       clean(p.name), clean(p.contact), clean(p.product), clean(p.quantity),
       clean(p.deadline), clean(p.delivery), clean(p.idea), 'New'
     ];
-    sheet.appendRow(row);
+    sheet.appendRow(row.map(safeCell));
 
     MailApp.sendEmail({
       to: NOTIFY_EMAIL,
@@ -47,6 +47,8 @@ function getSheet() {
   return sheet;
 }
 function clean(v) { return String(v || '').trim().slice(0, 2000); }
+// A leading ' makes Sheets store the text as-is, so "=..." from the form can't run as a formula.
+function safeCell(v) { return typeof v === 'string' && /^[=+\-@\t\r]/.test(v) ? "'" + v : v; }
 function esc(v) { return String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 function json(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 
